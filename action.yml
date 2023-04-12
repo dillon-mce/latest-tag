@@ -1,0 +1,18 @@
+name: 'Latest Tag'
+description: 'Sets the latest tag to RELEASE_VERSION environment variable'
+outputs:
+  release_version:
+    description: "The release version from the latest tag"
+    value: ${{ steps.random-number-generator.outputs.random-number }}
+runs:
+  using: "composite"
+  steps:
+    - run: |
+      # fail if any commands fails
+      set -ex
+
+      git fetch --prune --unshallow --tags
+      shell: bash
+
+      GIT_RELEASE_VERSION=$(git describe --tags --always --abbrev=0)
+      echo "RELEASE_VERSION=$GIT_RELEASE_VERSION" >> $GITHUB_ENV
